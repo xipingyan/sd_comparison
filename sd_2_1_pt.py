@@ -7,7 +7,7 @@ import numpy as np
 
 from sd_evaluate import calculate_clip_score, np2image
 
-def test_sd_2_1(nsteps, loop_num):
+def test_sd_2_1(nsteps, loop_num, bf16):
     # model_id = "stabilityai/stable-diffusion-2-1"
     model_id="/home/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
     if not os.path.exists(model_id):
@@ -21,7 +21,7 @@ def test_sd_2_1(nsteps, loop_num):
     device="cpu" # cpu, cuda
     # pipe = pipe.to("cuda")
     print(f"  device = {device}")
-    pipe = pipe.to(device, torch_dtype=torch.float32)
+    pipe = pipe.to(device, torch_dtype=torch.float32 if bf16 == 1 else torch.bfloat16)
 
     print(f"  nsteps = {nsteps}")
     set_seed(42)
