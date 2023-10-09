@@ -20,7 +20,7 @@ def test_sd_1_4(nsteps, loop_num):
     device="cpu" # cpu, cuda
     # pipe = pipe.to("cuda")
     print(f"  device = {device}")
-    pipe = pipe.to(device, torch_dtype=torch.bfloat16)
+    pipe = pipe.to(device, torch_dtype=torch.float32)
 
     print(f"  nsteps = {nsteps}")
     set_seed(42)

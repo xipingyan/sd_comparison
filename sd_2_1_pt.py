@@ -16,12 +16,12 @@ def test_sd_2_1(nsteps, loop_num):
     print(f"== Test pytorch model: {model_id}")
 
     # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float32)
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
     device="cpu" # cpu, cuda
     # pipe = pipe.to("cuda")
     print(f"  device = {device}")
-    pipe = pipe.to(device, torch_dtype=torch.bfloat16)
+    pipe = pipe.to(device, torch_dtype=torch.float32)
 
     print(f"  nsteps = {nsteps}")
     set_seed(42)
