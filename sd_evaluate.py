@@ -2,8 +2,9 @@ import torch
 from torchmetrics.functional.multimodal import clip_score
 from functools import partial
 
-clip_score_fn = partial(clip_score, model_name_or_path="openai/clip-vit-base-patch16")
-
+model_id="openai/clip-vit-base-patch16"
+model_id="models/clip-vit-base-patch16"
+clip_score_fn = partial(clip_score, model_name_or_path=model_id)
 
 def calculate_clip_score(images, prompts):
     images_int = (images * 255).astype("uint8")

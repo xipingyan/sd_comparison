@@ -2,12 +2,15 @@ import torch
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
 from transformers import set_seed
 import time
+import os
 
 from sd_evaluate import calculate_clip_score
 
 def test_sd_2_1(nsteps):
     # model_id = "stabilityai/stable-diffusion-2-1"
     model_id="/home/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    if not os.path.exists(model_id):
+        model_id="/mnt/data_sda/llm_irs/pytorch_models/stable-diffusion-v2-1"
 
     print(f"== Test pytorch model: {model_id}")
 
