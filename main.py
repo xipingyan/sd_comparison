@@ -6,9 +6,9 @@ from sd_2_1_pt_ipex import test_sd_2_1_pt_ipex
 def main():
     nsteps = 10
     loop_num = 3
-    enable_bf16 = False
-    prompt = "a photo of an astronaut riding a horse on mars"
-    # prompt="sailing ship in storm by Leonardo da Vinci"
+    enable_bf16 = True
+    prompt="a photo of an astronaut riding a horse on mars"
+    prompt="sailing ship in storm by Leonardo da Vinci"
     # prompt = "sailing ship in storm by Rembrandt
 
     tms=[]

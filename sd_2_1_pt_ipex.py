@@ -29,7 +29,7 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
         model_id="/mnt/data_sda/llm_irs/pytorch_models/stable-diffusion-v2-1"
 
     print(f"== Test pytorch model: {model_id}")
-
+    
     # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
     tdtype = torch.bfloat16 if enable_bf16 else torch.float32
     print(f"dtype={tdtype}")
@@ -43,13 +43,13 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
     # pipe.safety_checker = pipe.safety_checker.to(memory_format=torch.channels_last)
 
     # Create random input to enable JIT compilation
-    sample = torch.randn(2,4,96,96)  # 64->768, 96->1024
-    timestep = torch.rand(1)*999
-    encoder_hidden_status = torch.randn(2,77,1024)
-    input_example = (sample, timestep, encoder_hidden_status)
+    # sample = torch.randn(2,4,96,96)  # 64->768, 96->1024
+    # timestep = torch.rand(1)*999
+    # encoder_hidden_status = torch.randn(2,77,1024)
+    # input_example = (sample, timestep, encoder_hidden_status)
 
     # optimize with IPEX
-    pipe.unet = ipex.optimize(pipe.unet.eval(), dtype=tdtype, inplace=True, sample_input=input_example)
+    pipe.unet = ipex.optimize(pipe.unet.eval(), dtype=tdtype, inplace=True)
     pipe.vae = ipex.optimize(pipe.vae.eval(), dtype=tdtype, inplace=True)
     pipe.text_encoder = ipex.optimize(pipe.text_encoder.eval(), dtype=tdtype, inplace=True)
     # pipe.safety_checker = ipex.optimize(pipe.safety_checker.eval(), dtype=tdtype, inplace=True)
