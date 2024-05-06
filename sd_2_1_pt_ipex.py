@@ -54,6 +54,10 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
     pipe.text_encoder = ipex.optimize(pipe.text_encoder.eval(), dtype=tdtype, inplace=True)
     # pipe.safety_checker = ipex.optimize(pipe.safety_checker.eval(), dtype=tdtype, inplace=True)
 
+    seed_val = 42    
+    print(f"  nsteps = {nsteps}, set_seed({seed_val}), unet.dtype={pipe.unet.dtype}")
+    set_seed(seed_val)
+
     # warm up
     elapsed_time(pipe, prompt, None, 1, 1)
 

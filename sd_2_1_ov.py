@@ -25,16 +25,25 @@ def test_sd_2_1_ov(prompt, nsteps, loop_num, enable_bf16:bool):
     # model_id = "stabilityai/stable-diffusion-2-1"
     model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
     saved_ov_model="./ov_model"
-    
+    if enable_bf16:
+        ov_cfg={}
+    else:
+        ov_cfg={"INFERENCE_PRECISION_HINT":"f32"}
+
     if not os.path.exists(saved_ov_model):
         ov_pipe = OVStableDiffusionPipeline.from_pretrained(model_id, export=True)
         ov_pipe(prompt, num_inference_steps=nsteps, height=512, width=512, output_type="numpy")
         ov_pipe.save_pretrained(saved_ov_model)
         print(f"== Test pytorch model: {model_id}")
     else:
-        ov_pipe = OVStableDiffusionPipeline.from_pretrained(saved_ov_model)
+        ov_pipe = OVStableDiffusionPipeline.from_pretrained(saved_ov_model, ov_config=ov_cfg)
 
     ov_pipe.reshape(batch_size=1, height=512, width=512, num_images_per_prompt=1)
+
+    seed_val = 42    
+    print(f"  nsteps = {nsteps}, set_seed({seed_val})")
+    set_seed(seed_val)
+
     # warm up
     elapsed_time(ov_pipe, prompt, None, 1, 1)
 
