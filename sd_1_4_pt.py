@@ -6,8 +6,16 @@ import os
 import numpy as np
 
 from sd_evaluate import calculate_clip_score, np2image
+from pipeline import elapsed_time
 
-def test_sd_1_4(nsteps, loop_num, bf16):
+def print_ov_version():
+    import openvino.runtime as ov
+    print("==========================")
+    print(f"OpenVINO versino: {ov.get_version()}")
+    print("==========================")
+
+def test_sd_1_4(nsteps, loop_num, enable_bf16):
+    print_ov_version()
     model_id="models/stable-diffusion-v1-4"
     if not os.path.exists(model_id):
         # Will download from HF.
@@ -20,7 +28,7 @@ def test_sd_1_4(nsteps, loop_num, bf16):
     device="cpu" # cpu, cuda
     # pipe = pipe.to("cuda")
     print(f"  device = {device}")
-    pipe = pipe.to(device, torch_dtype=torch.float32 if bf16 == 1 else torch.bfloat16)
+    pipe = pipe.to(device, torch_dtype=torch.bfloat16 if enable_bf16 else torch.float32)
 
     print(f"  nsteps = {nsteps}")
     set_seed(42)

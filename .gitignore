@@ -1,3 +1,4 @@
 *.png
 __pycache__
 models
+ov_model
