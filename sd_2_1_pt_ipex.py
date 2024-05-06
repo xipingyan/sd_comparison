@@ -43,7 +43,7 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
     # pipe.safety_checker = pipe.safety_checker.to(memory_format=torch.channels_last)
 
     # Create random input to enable JIT compilation
-    sample = torch.randn(2,4,96,96)  # 64->768
+    sample = torch.randn(2,4,96,96)  # 64->768, 96->1024
     timestep = torch.rand(1)*999
     encoder_hidden_status = torch.randn(2,77,1024)
     input_example = (sample, timestep, encoder_hidden_status)

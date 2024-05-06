@@ -24,9 +24,10 @@ def test_sd_2_1_ov(prompt, nsteps, loop_num, enable_bf16:bool):
 
     # model_id = "stabilityai/stable-diffusion-2-1"
     model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    # saved_ov_model="/mnt/disk2/models_e37569ff_stateful/stable-diffusion-v2-1/pytorch/dldt/FP16"
     saved_ov_model="./ov_model"
     if enable_bf16:
-        ov_cfg={}
+        ov_cfg={"INFERENCE_PRECISION_HINT":"bf16"}
     else:
         ov_cfg={"INFERENCE_PRECISION_HINT":"f32"}
 
