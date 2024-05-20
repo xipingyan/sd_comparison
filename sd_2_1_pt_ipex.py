@@ -48,6 +48,18 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
     # encoder_hidden_status = torch.randn(2,77,1024)
     # input_example = (sample, timestep, encoder_hidden_status)
 
+    # Copy from ipex script for enable jit.
+    # if args.model_name_or_path == "stabilityai/stable-diffusion-2-1":
+    #     text_encoder_input = torch.ones((1, 77), dtype=torch.int64)
+    #     input = torch.randn(2, 4, 96, 96).to(memory_format=torch.channels_last).to(dtype=pipe.precision), torch.tensor(921), torch.randn(2, 77, 1024).to(dtype=pipe.precision)
+    # if args.precision == "bf16" or args.precision == "fp16":
+    #         with torch.cpu.amp.autocast(dtype=args.dtype), torch.no_grad():
+    #             pipe.traced_unet = torch.jit.trace(pipe.unet, input, strict=False)
+    #             pipe.traced_unet = torch.jit.freeze(pipe.traced_unet)
+    #             pipe.traced_unet(*input)
+    #             pipe.traced_unet(*input)
+
+
     # optimize with IPEX
     pipe.unet = ipex.optimize(pipe.unet.eval(), dtype=tdtype, inplace=True)
     pipe.vae = ipex.optimize(pipe.vae.eval(), dtype=tdtype, inplace=True)
