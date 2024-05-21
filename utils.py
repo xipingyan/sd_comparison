@@ -1,15 +1,18 @@
 import os
 
 def get_numa_info():
-    os.system('lscpu | grep "NUMA node" > lscpu.txt')
+    tmp_fn = "lscpu_" + str(os.getpid()) + ".txt"
+    print(f"tmp_fn={tmp_fn}")
+    os.system('lscpu | grep "NUMA node" > ' + tmp_fn)
     
     # Using readlines()
-    file1 = open('lscpu.txt', 'r')
+    os.getpid()
+    file1 = open(tmp_fn, 'r')
     Lines = file1.readlines()
 
     if len(Lines) < 2:
         print("Error: can't get lscpu info.")
-        os.system("rm -rf lscpu.txt")
+        os.system("rm -rf " + tmp_fn)
         exit()
     
     snc_num = int(Lines[0].split(':')[1])
@@ -27,15 +30,15 @@ def get_numa_info():
         numa_nodes.append([pyhsical_node_range, logic_node_range])
     if snc_num != len(numa_nodes):
         print(f"Error: SNC number:{snc_num} != len(numa_nodes):{len(numa_nodes)} ")
-        os.system("rm -rf lscpu.txt")
+        os.system("rm -rf " + tmp_fn)
         exit()
 
-    os.system("rm -rf lscpu.txt")
+    os.system("rm -rf " + tmp_fn)
     return numa_nodes
 
 def get_numa_nodes_num():
     numa_nodes = get_numa_info()
     return len(numa_nodes)
 
-# numa_nodes = get_numa_info()
-# print(f"numa_nodes={numa_nodes}")
+numa_nodes = get_numa_info()
+print(f"numa_nodes={numa_nodes}")
