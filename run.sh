@@ -32,4 +32,4 @@ numactl -N 5 --membind=5 python3 main.py | tee tmp_5.txt
 wait
 echo "Start statistic final result:"
 echo "============================================="
-python3 calc_final_rslt.py tmp_0.txt  tmp_1.txt  tmp_2.txt  tmp_3.txt  tmp_4.txt  tmp_5.txt 
+python3 calc_final_rslt.py tmp_0.txt tmp_1.txt tmp_2.txt tmp_3.txt tmp_4.txt tmp_5.txt 
