@@ -1,10 +1,10 @@
 import time
 from sd_evaluate import calculate_clip_score, np2image
 
-def elapsed_time(pipeline, prompt, stm=None, nb_pass=10, num_inference_steps=20, saved_img_fn=None):
+def elapsed_time(pipeline, prompt, height, width, stm=None, nb_pass=10, num_inference_steps=20, saved_img_fn=None):
     for _ in range(nb_pass):
         start = time.time()
-        images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=512, width=512).images
+        images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
         end = time.time()
         if stm is not None:
             stm.add_tm(end - start)

@@ -14,17 +14,17 @@ def print_ov_version():
     print(f"Torch version: {torch.__version__}")
     print("==========================")
 
-def test_sd_2_1(prompt, nsteps, loop_num, enable_bf16:bool):
+def test_sd_2_1(model_id, prompt, width, height, nsteps, loop_num, enable_bf16:bool):
     print("\n*********************************************************")
     print_ov_version()
     stm = StatisticTM("Test SD 2.1")
 
     # model_id = "stabilityai/stable-diffusion-2-1"
-    model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    # model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
     if not os.path.exists(model_id):
-        model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
-
-    print(f"== Test pytorch model: {model_id}")
+        print(f"  Error: Model id not exist: {model_id}")
+        return
+    print(f"  Test pytorch model: {model_id}")
 
     # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.bfloat16 if enable_bf16 else torch.float32)
@@ -38,8 +38,9 @@ def test_sd_2_1(prompt, nsteps, loop_num, enable_bf16:bool):
     set_seed(seed_val)
 
     print("Start warmup:")
-    elapsed_time(pipe, prompt, None, 1, 1, saved_img_fn=None)
+    elapsed_time(pipe, prompt, height, width, None, 1, 1, saved_img_fn=None)
 
     print(f"Start inference: Prompt:{prompt}, Loop num:{loop_num}")
-    stm = elapsed_time(pipe, prompt, stm, loop_num, nsteps, saved_img_fn="rslt_sd2_1_pt.png")
+    stm = elapsed_time(pipe, prompt, height, width, stm,
+                       loop_num, nsteps, saved_img_fn="rslt_sd2_1_pt.png")
     return stm

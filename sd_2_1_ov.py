@@ -17,39 +17,45 @@ def print_ov_version():
     print("==========================")
 
 
-def test_sd_2_1_ov(prompt, nsteps, loop_num, enable_bf16:bool):
+def test_sd_2_1_ov(model_id, prompt, width, height, nsteps, loop_num, enable_bf16:bool):
     print("\n*********************************************************")
     print_ov_version()
     stm = StatisticTM("Test SD 2.1 with OV")
 
     # model_id = "stabilityai/stable-diffusion-2-1"
-    model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    # model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
     # saved_ov_model="/mnt/disk2/models_e37569ff_stateful/stable-diffusion-v2-1/pytorch/dldt/FP16"
+    if not os.path.exists(model_id):
+        print(f"  Error: OV model_id not exist: {model_id}")
+        return
+    print(f"  Test pytorch model: {model_id}")
+
     saved_ov_model="./ov_model"
     if enable_bf16:
         ov_cfg={"INFERENCE_PRECISION_HINT":"bf16"}
     else:
         ov_cfg={"INFERENCE_PRECISION_HINT":"f32"}
 
+    print(f"  height={height}, width={width}.")
     if not os.path.exists(saved_ov_model):
         ov_pipe = OVStableDiffusionPipeline.from_pretrained(model_id, export=True)
-        ov_pipe(prompt, num_inference_steps=nsteps, height=512, width=512, output_type="numpy")
+        ov_pipe(prompt, num_inference_steps=nsteps, height=height, width=width, output_type="numpy")
         ov_pipe.save_pretrained(saved_ov_model)
         print(f"== Test pytorch model: {model_id}")
     else:
         ov_pipe = OVStableDiffusionPipeline.from_pretrained(saved_ov_model, ov_config=ov_cfg)
 
-    ov_pipe.reshape(batch_size=1, height=512, width=512, num_images_per_prompt=1)
+    ov_pipe.reshape(batch_size=1, height=height, width=width, num_images_per_prompt=1)
 
     seed_val = 42    
     print(f"  nsteps = {nsteps}, set_seed({seed_val})")
     set_seed(seed_val)
 
     # warm up
-    elapsed_time(ov_pipe, prompt, None, 1, 1)
+    elapsed_time(ov_pipe, prompt, width, height, None, 1, 1)
 
     # inference.
-    stm = elapsed_time(ov_pipe, prompt, stm, loop_num, nsteps, saved_img_fn="rslt_sd2_1_ov.png")
+    stm = elapsed_time(ov_pipe, prompt, width, height, loop_num, nsteps, saved_img_fn="rslt_sd2_1_ov.png")
     print(stm)
     return stm
 
@@ -63,13 +69,13 @@ def test_sd_2_1_ov(prompt, nsteps, loop_num, enable_bf16:bool):
 
 
     print("Start warmup:")
-    pipe(prompt, num_inference_steps=10, height=512, width=512, output_type="numpy")
+    pipe(prompt, num_inference_steps=10, height=height, width=width, output_type="numpy")
 
     print(f"Start inference: Prompt:{prompt}, Loop num:{loop_num}")
     for i in range(loop_num):
         print(f"  Start infer time: {i}")
         t1 = time.perf_counter()
-        images = pipe(prompt, num_inference_steps=nsteps, height=512, width=512, output_type="numpy").images
+        images = pipe(prompt, num_inference_steps=nsteps, height=height, width=width, output_type="numpy").images
         t2 = time.perf_counter()
         stm.add_tm(t2-t1)
 

@@ -18,21 +18,21 @@ def print_ipex_version():
     print(f"IPEX version: {ipex.__version__}")
     print("===================================")
 
-def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
+def test_sd_2_1_pt_ipex(model_id, prompt, width, height, nsteps, loop_num, enable_bf16):
     print("\n*********************************************************")
     print_ipex_version()
     stm = StatisticTM("Test SD 2.1 with IPEX")
 
     # model_id = "stabilityai/stable-diffusion-2-1"
-    model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    # model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
     if not os.path.exists(model_id):
-        model_id="/mnt/data_sda/llm_irs/pytorch_models/stable-diffusion-v2-1"
+        print(f"  Error: Model id not exist: {model_id}")
+        return
+    print(f"  Test pytorch model: {model_id}")
 
-    print(f"== Test pytorch model: {model_id}")
-    
     # Use the DPMSolverMultistepScheduler (DPM-Solver++) scheduler here instead
     tdtype = torch.bfloat16 if enable_bf16 else torch.float32
-    print(f"dtype={tdtype}")
+    print(f"  dtype={tdtype}")
 
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=tdtype)
     
@@ -71,11 +71,11 @@ def test_sd_2_1_pt_ipex(prompt, nsteps, loop_num, enable_bf16):
     set_seed(seed_val)
 
     # warm up
-    elapsed_time(pipe, prompt, None, 1, 1)
+    elapsed_time(pipe, prompt, width, height, None, 1, 1)
 
     # inference.
     with torch.cpu.amp.autocast(enabled=True, dtype=tdtype):
-        stm = elapsed_time(pipe, prompt, stm, nb_pass=loop_num, num_inference_steps=nsteps, saved_img_fn="rslt_sd2_1_ipex.png")
+        stm = elapsed_time(pipe, prompt, width, height, stm, nb_pass=loop_num, num_inference_steps=nsteps, saved_img_fn="rslt_sd2_1_ipex.png")
     return stm
 
     # pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
