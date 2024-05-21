@@ -22,11 +22,11 @@ source ${OV_ENV}
 # numactl -C 0-383 -m 0,1,2,3,4,5 python main.py
 # numactl -N 1 --membind=1 python main.py
 
-numactl -N 0 --membind=0 python3 main.py | tee tmp_0.txt  && 
-numactl -N 1 --membind=1 python3 main.py | tee tmp_1.txt  && 
-numactl -N 2 --membind=2 python3 main.py | tee tmp_2.txt  &&
-numactl -N 3 --membind=3 python3 main.py | tee tmp_3.txt  &&
-numactl -N 4 --membind=4 python3 main.py | tee tmp_4.txt  &&
+numactl -N 0 --membind=0 python3 main.py | tee tmp_0.txt  &
+numactl -N 1 --membind=1 python3 main.py | tee tmp_1.txt  &
+numactl -N 2 --membind=2 python3 main.py | tee tmp_2.txt  &
+numactl -N 3 --membind=3 python3 main.py | tee tmp_3.txt  &
+numactl -N 4 --membind=4 python3 main.py | tee tmp_4.txt  &
 numactl -N 5 --membind=5 python3 main.py | tee tmp_5.txt 
 
 wait
