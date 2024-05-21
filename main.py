@@ -14,8 +14,8 @@ def main():
     tms = []
     # tms.append(test_sd_1_4(nsteps, loop_num, enable_bf16=enable_bf16))
 
-    pt_model_id = "/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
-    ov_model_id = "/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
+    pt_model_id = "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch"
+    ov_model_id = "/home/sdp/xiping/ipex_env/models/ov_model/ov_model"
     width = 768
     height = 768
 
