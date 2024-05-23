@@ -13,10 +13,17 @@ from sd_evaluate import calculate_clip_score, np2image
 from statistic_tm import StatisticTM
 from pipeline import elapsed_time
 
+from torch.profiler import profile, record_function, ProfilerActivity
+
 def print_ipex_version():
     print("===================================")
     print(f"IPEX version: {ipex.__version__}")
     print("===================================")
+
+def profiling_unet_trace(pipe):
+    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) as prof:
+        pipe.unet(sample=torch.randn(2, 4, 96, 96).to(memory_format=torch.channels_last).to(dtype=tdtype), timestep=torch.tensor(921), encoder_hidden_states=torch.randn(2, 77, 1024).to(dtype=tdtype))
+    prof.export_chrome_trace("trace_unet_ipex.json")
 
 def test_sd_2_1_pt_ipex(model_id, prompt, width, height, nsteps, loop_num, enable_bf16):
     print("\n*********************************************************")
@@ -76,6 +83,9 @@ def test_sd_2_1_pt_ipex(model_id, prompt, width, height, nsteps, loop_num, enabl
     # inference.
     with torch.cpu.amp.autocast(enabled=True, dtype=tdtype):
         stm = elapsed_time(pipe, prompt, width, height, stm, nb_pass=loop_num, num_inference_steps=nsteps, saved_img_fn="rslt_sd2_1_ipex.png")
+
+    profiling_unet_trace(pipe)
+
     return stm
 
     # pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
