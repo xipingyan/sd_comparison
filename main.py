@@ -4,8 +4,8 @@ from sd_1_4_pt import test_sd_1_4
 from sd_2_1_pt_ipex import test_sd_2_1_pt_ipex
 
 def main():
-    nsteps = 1
-    loop_num = 1
+    nsteps = 50
+    loop_num = 3
     enable_bf16 = True
     prompt = "a photo of an astronaut riding a horse on mars"
     prompt = "sailing ship in storm by Leonardo da Vinci"
