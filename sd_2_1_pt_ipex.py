@@ -21,7 +21,8 @@ def print_ipex_version():
     print("===================================")
 
 def profiling_unet_trace(pipe, tdtype):
-    with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) as prof:
+    # , ProfilerActivity.CUDA
+    with profile(activities=[ProfilerActivity.CPU]) as prof:
         pipe.unet(sample=torch.randn(2, 4, 96, 96).to(memory_format=torch.channels_last).to(dtype=tdtype), timestep=torch.tensor(921), encoder_hidden_states=torch.randn(2, 77, 1024).to(dtype=tdtype))
     prof.export_chrome_trace("trace_unet_ipex.json")
 
