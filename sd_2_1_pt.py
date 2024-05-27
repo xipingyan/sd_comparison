@@ -18,6 +18,7 @@ def test_sd_2_1(model_id, prompt, width, height, nsteps, loop_num, enable_bf16:b
     print("\n*********************************************************")
     print_ov_version()
     stm = StatisticTM("Test SD 2.1")
+    stm.add_comments("Torch version: " + torch.__version__)
 
     # model_id = "stabilityai/stable-diffusion-2-1"
     # model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"

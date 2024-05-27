@@ -29,6 +29,7 @@ def test_sd_2_1_pt_ipex(model_id, prompt, width, height, nsteps, loop_num, enabl
     print("\n*********************************************************")
     print_ipex_version()
     stm = StatisticTM("Test SD 2.1 with IPEX")
+    stm.add_comments("IPEX version: " + ipex.__version__)
 
     # model_id = "stabilityai/stable-diffusion-2-1"
     # model_id="/mnt/disk1/llm_irs/models_original/stable-diffusion-v2-1/pytorch"
