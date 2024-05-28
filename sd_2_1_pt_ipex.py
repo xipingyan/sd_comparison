@@ -8,6 +8,7 @@ from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
 from transformers import set_seed
 import os
 import numpy as np
+from utils import print_start_flag
 
 from sd_evaluate import calculate_clip_score, np2image
 from statistic_tm import StatisticTM
@@ -27,7 +28,7 @@ def profiling_unet_trace(pipe, tdtype):
     prof.export_chrome_trace("trace_unet_ipex.json")
 
 def test_sd_2_1_pt_ipex(model_id, prompt, width, height, nsteps, loop_num, enable_bf16):
-    print("\n*********************************************************")
+    print_start_flag("test_sd_2_1_pt_ipex")
     print_ipex_version()
     stm = StatisticTM("Test SD 2.1 with IPEX")
     stm.add_comments("IPEX version: " + ipex.__version__)

@@ -4,6 +4,7 @@ from transformers import set_seed
 import time
 import os
 import numpy as np
+from utils import print_start_flag
 
 from sd_evaluate import calculate_clip_score, np2image
 from statistic_tm import StatisticTM
@@ -15,7 +16,7 @@ def print_ov_version():
     print("==========================")
 
 def test_sd_2_1(model_id, prompt, width, height, nsteps, loop_num, enable_bf16:bool):
-    print("\n*********************************************************")
+    print_start_flag("test_sd_2_1")
     print_ov_version()
     stm = StatisticTM("Test SD 2.1")
     stm.add_comments("Torch version: " + torch.__version__)

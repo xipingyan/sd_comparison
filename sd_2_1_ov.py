@@ -5,6 +5,7 @@ import time
 import os
 import numpy as np
 import openvino.runtime as ov
+from utils import print_start_flag
 
 from sd_evaluate import calculate_clip_score, np2image
 from statistic_tm import StatisticTM
@@ -17,7 +18,7 @@ def print_ov_version():
 
 
 def test_sd_2_1_ov(model_id, prompt, width, height, nsteps, loop_num, enable_bf16:bool, is_pt_model:bool):
-    print("\n*********************************************************")
+    print_start_flag("test_sd_2_1_ov")
     print_ov_version()
     stm = StatisticTM("Test SD 2.1 with OV")
     stm.add_comments("OpenVINO:" + str(ov.get_version()))
