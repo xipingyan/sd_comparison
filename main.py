@@ -6,14 +6,19 @@ from sd_2_1_pt_ipex import test_sd_2_1_pt_ipex
 import socket
 import os
 def get_model_id():
-    hostname = os.getlogin() + str("@") + socket.gethostname()
+    hostname = socket.gethostname()
+
+    # gnr dcai docker. (Because we can't get username in the docker.)
+    if hostname != "a4bf018d3372.jf.intel.com":
+        hostname = os.getlogin() + str("@") + hostname
+
     print(f"== Current hostname={hostname}")
     if hostname == "sdp@a4bf018d3372": # gnr
         return "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch", True
     elif hostname == "xiping_dev@odt-xiping-sonomacreek-01":
         # return "./models/ov_model/", False
         return "/mnt/data_sda/llm_irs/pytorch_models/stable-diffusion-v2-1", True
-    elif hostname == "root@a4bf018d3372": # gnr dcai docker
+    elif hostname == "a4bf018d3372.jf.intel.com": # gnr dcai docker
         return "/home/dataset/pytorch/models/stable-diffusion-v2-1/pytorch", True
     else:
         return "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch", True
