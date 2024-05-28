@@ -16,7 +16,7 @@ def elapsed_time(pipeline, prompt, height, width, stm=None, nb_pass=10, num_infe
             # ProfilerActivity.CUDA
             with profile(activities=[ProfilerActivity.CPU]) as prof:
                 images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
-            prof.export_chrome_trace("trace_unet_ipex.json")
+            prof.export_chrome_trace("trace_unet_ipex_"+str(i)+".json")
         # Not profiling.
         else:
             images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
