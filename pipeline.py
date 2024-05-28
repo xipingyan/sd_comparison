@@ -1,10 +1,25 @@
 import time
 from sd_evaluate import calculate_clip_score, np2image
+from torch.profiler import profile, record_function, ProfilerActivity
 
-def elapsed_time(pipeline, prompt, height, width, stm=None, nb_pass=10, num_inference_steps=20, saved_img_fn=None):
-    for _ in range(nb_pass):
+# def profiling_unet_trace(pipe, tdtype):
+#     # , 
+#     with profile(activities=[ProfilerActivity.CPU]) as prof:
+#         pipe.unet(sample=torch.randn(2, 4, 96, 96).to(memory_format=torch.channels_last).to(dtype=tdtype), timestep=torch.tensor(921), encoder_hidden_states=torch.randn(2, 77, 1024).to(dtype=tdtype))
+#     prof.export_chrome_trace("trace_unet_ipex.json")
+
+def elapsed_time(pipeline, prompt, height, width, stm=None, nb_pass=10, num_inference_steps=20, saved_img_fn=None, profiling_pt=False):
+    for i in range(nb_pass):
         start = time.time()
-        images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
+        # Profiling
+        if profiling_pt:
+            # ProfilerActivity.CUDA
+            with profile(activities=[ProfilerActivity.CPU]) as prof:
+                images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
+            prof.export_chrome_trace("trace_unet_ipex.json")
+        # Not profiling.
+        else:
+            images = pipeline(prompt, num_inference_steps=num_inference_steps, output_type="np", height=height, width=width).images
         end = time.time()
         if stm is not None:
             stm.add_tm(end - start)
