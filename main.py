@@ -3,6 +3,21 @@ from sd_2_1_ov import test_sd_2_1_ov
 from sd_1_4_pt import test_sd_1_4
 from sd_2_1_pt_ipex import test_sd_2_1_pt_ipex
 
+import socket
+import os
+def get_model_id():
+    hostname = os.getlogin() + str("@") + socket.gethostname()
+    print(f"== Current hostname={hostname}")
+    if hostname == "sdp@a4bf018d3372": # gnr
+        return "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch", True
+    elif hostname == "xiping_dev@odt-xiping-sonomacreek-01":
+        # return "./models/ov_model/", False
+        return "/mnt/data_sda/llm_irs/pytorch_models/stable-diffusion-v2-1", True
+    elif hostname == "root@a4bf018d3372": # gnr dcai docker
+        return "/home/dataset/pytorch/models/stable-diffusion-v2-1/pytorch", True
+    else:
+        return "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch", True
+
 def main():
     nsteps = 50
     loop_num = 3
@@ -14,11 +29,7 @@ def main():
     tms = []
     # tms.append(test_sd_1_4(nsteps, loop_num, enable_bf16=enable_bf16))
 
-    pt_model_id = "/home/sdp/xiping/ipex_env/models/stable-diffusion-v2-1/pytorch"
-    is_pt_model = True
-
-    # pt_model_id = "./models/ov_model/"
-    # is_pt_model = False
+    pt_model_id, is_pt_model = get_model_id()
 
     width = 768
     height = 768    
