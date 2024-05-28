@@ -45,5 +45,6 @@ def get_numa_nodes_num():
     numa_nodes = get_numa_info()
     return len(numa_nodes)
 
-numa_nodes = get_numa_info()
-print(f"numa_nodes={numa_nodes}")
+######### Unit test
+# numa_nodes = get_numa_info()
+# print(f"numa_nodes={numa_nodes}")

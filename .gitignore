@@ -4,3 +4,4 @@ models
 ov_model
 *.txt
 python-env
+*.json
